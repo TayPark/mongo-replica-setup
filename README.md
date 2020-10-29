@@ -1,0 +1,1 @@
+This repo is for creating MongoDB replica setting with `docker-compose`
