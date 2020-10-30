@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 networks:
   mongo-network:
@@ -9,65 +9,92 @@ services:
     hostname: mongodb1
     container_name: mongodb1
     image: mongo
-    expose: 
-      - 27017
     networks:
       - mongo-network
     volumes:
       - ./data/db-01:/data/db
-      - ./scripts:/scripts
     ports:
       - 27017:27017
     depends_on:
       - mongodb2
       - mongodb3
-    entrypoint: [ "mongod", "--bind_ip_all", "--replSet", "mongo-repl" ]
-    restart: always
+      - mongodb4
+      - mongodb5
+    command: mongod --bind_ip_all --replSet rs0
+    restart: unless-stopped
 
   mongodb2:
     hostname: mongodb2
     container_name: mongodb2
     image: mongo
-    expose: 
-      - 27017
     networks:
       - mongo-network
     volumes:
       - ./data/db-02:/data/db
-      - ./scripts:/scripts
     ports:
       - 27018:27017
     depends_on:
       - mongodb3
-    entrypoint: [ "mongod", "--bind_ip_all", "--replSet", "mongo-repl" ]
-    restart: always
+      - mongodb4
+      - mongodb5
+    command: mongod --bind_ip_all --replSet rs0
+    restart: unless-stopped
+
 
   mongodb3:
     hostname: mongodb3
     container_name: mongodb3
     image: mongo
-    expose: 
-      - 27017
     networks:
       - mongo-network
     volumes:
       - ./data/db-03:/data/db
-      - ./scripts:/scripts
     ports:
       - 27019:27017
-    entrypoint: [ "mongod", "--bind_ip_all", "--replSet", "mongo-repl" ]
-    restart: always
+    depends_on:
+      - mongodb4
+      - mongodb5
+    command: mongod --bind_ip_all --replSet rs0
+    restart: unless-stopped
 
-  mongo-repl-helper:
-    hostname: mongo-repl-helper
-    container_name: mongo-repl-helper
+
+  mongodb4:
+    hostname: mongodb4
+    container_name: mongodb4
     image: mongo
     networks:
       - mongo-network
-    depends_on:
-      - mongodb1
-      - mongodb2
-      - mongodb3
     volumes:
-      - ./scripts/init.sh:/scripts/init.sh
-    entrypoint: ["sh","/scripts/init.sh"]
+      - ./data/db-04:/data/db
+    ports:
+      - 27020:27017
+    depends_on: 
+      - mongodb5
+    command: mongod --bind_ip_all --replSet rs0
+    restart: unless-stopped
+
+  
+  mongodb5:
+    hostname: mongodb5
+    container_name: mongodb5
+    image: mongo
+    networks:
+      - mongo-network
+    volumes:
+      - ./data/db-05:/data/db
+    ports:
+      - 27021:27017
+    command: mongod --bind_ip_all --replSet rs0
+    restart: unless-stopped
+
+  repl-helper:
+    container_name: repl-helper
+    image: repl-helper
+    networks:
+      - mongo-network
+    depends_on: 
+      - mongodb1
+    # volumes: 
+    #   - ./innerSetup.sh:/configs/innerSetup.sh
+    #   - ./replicaInit.js:/configs/replicaInit.js
+    # command: sh /configs/innerSetup.sh

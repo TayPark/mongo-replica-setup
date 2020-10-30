@@ -1,19 +1,16 @@
 #!/bin/bash
 
-echo "[docker-compose] Stopping existing containers"
-docker-compose stop
+# echo "[Replication setup] build file..."
+# docker build -t repl-helper .
 
-echo "[docker-compose] Starting containers..."
-docker-compose up --remove-orphans -d
+if [ $(docker ps -aq | wc -l) -gt 1 ]; then
+  echo "[docker-compose] Restarting containers"
+  docker-compose restart
+else
+  echo "[docker-compose] Starting containers..."
+  docker-compose up --remove-orphans -d
+fi
 
-# echo "[docker-compose] Starting replica setup..."
-# docker-compose exec mongodb1 mongo /scripts/setPrimary.js
+sleep 10
 
-# echo "[docker-compose] Please wait for PRIMARY node setup..."
-# sleep 5
-
-# echo "[docker-compose] Set SECONDARY nodes..."
-# docker-compose exec mongodb2 mongo /scripts/setSecondary.js
-# docker-compose exec mongodb3 mongo /scripts/setSecondary.js
-
-# echo "[docker-compose] Replication is done!"
+echo "[docker-compose] Done. check out"
