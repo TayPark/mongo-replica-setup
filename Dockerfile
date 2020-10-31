@@ -1,7 +1,6 @@
 FROM mongo
 
-WORKDIR /usr/src/
-RUN mkdir configs  
+RUN mkdir /usr/src/configs  
 WORKDIR /usr/src/configs
 
 COPY replicaInit.js .

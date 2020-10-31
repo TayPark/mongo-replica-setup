@@ -14,13 +14,6 @@ services:
       - ./data/db-01:/data/db
     ports:
       - 27017:27017
-    expose:
-      - 27017
-    depends_on:
-      - mongodb2
-      - mongodb3
-      - mongodb4
-      - mongodb5
     command: mongod --bind_ip_all --replSet rs0
     restart: unless-stopped
 
@@ -34,9 +27,7 @@ services:
     ports:
       - 27018:27017
     depends_on:
-      - mongodb3
-      - mongodb4
-      - mongodb5
+      - mongodb1
     command: mongod --bind_ip_all --replSet rs0
     restart: unless-stopped
 
@@ -50,8 +41,7 @@ services:
     ports:
       - 27019:27017
     depends_on:
-      - mongodb4
-      - mongodb5
+      - mongodb2
     command: mongod --bind_ip_all --replSet rs0
     restart: unless-stopped
 
@@ -65,7 +55,7 @@ services:
     ports:
       - 27020:27017
     depends_on: 
-      - mongodb5
+      - mongodb3
     command: mongod --bind_ip_all --replSet rs0
     restart: unless-stopped
 
@@ -78,6 +68,8 @@ services:
       - ./data/db-05:/data/db
     ports:
       - 27021:27017
+    depends_on:
+      - mongodb4
     command: mongod --bind_ip_all --replSet rs0
     restart: unless-stopped
 
@@ -87,4 +79,16 @@ services:
     networks:
       - backend
     depends_on: 
-      - mongodb1
+      - mongodb5
+  server:
+    container_name: server
+    build:
+      context: ./server
+    ports:
+      - 3000:3000
+    expose:
+      - "3000"
+    volumes: 
+      - ./server:/app
+    networks: 
+      - backend
