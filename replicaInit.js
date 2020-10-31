@@ -5,11 +5,7 @@ cfg = {
     { _id: 1, host: "mongodb2:27017" },
     { _id: 2, host: "mongodb3:27017" },
     { _id: 3, host: "mongodb4:27017" },
-    {
-      _id: 4,
-      host: "mongodb5:27017",
-      arbiterOnly: true
-    }
+    { _id: 4, host: "mongodb5:27017" }
   ]
 };
 
