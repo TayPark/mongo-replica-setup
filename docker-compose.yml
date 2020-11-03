@@ -13,14 +13,15 @@ services:
     volumes:
       - ./data/db-01:/data/db
       - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
-      - ./mongodb.key:/keys/mongodb.key:ro
+      - ./mongodb.key:/keys/mongodb.key
+      # - ./mongod.conf:/etc/mongod.conf
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27017:27017
-    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
+    command: mongod --replSet rs0 --bind_ip_all
     restart: unless-stopped
 
   mongodb2:
@@ -31,14 +32,15 @@ services:
     volumes:
       - ./data/db-02:/data/db
       - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
-      - ./mongodb.key:/keys/mongodb.key:ro
+      - ./mongodb.key:/keys/mongodb.key
+      # - ./mongod.conf:/etc/mongod.conf
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27018:27017
-    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
+    command: mongod --replSet rs0 --bind_ip_all
     restart: unless-stopped
 
   mongodb3:
@@ -49,19 +51,22 @@ services:
     volumes:
       - ./data/db-03:/data/db
       - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
-      - ./mongodb.key:/keys/mongodb.key:ro
+      - ./mongodb.key:/keys/mongodb.key
+      # - ./mongod.conf:/etc/mongod.conf
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27019:27017
-    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
+    command: mongod --replSet rs0 --bind_ip_all
     restart: unless-stopped
 
   repl-helper:
     container_name: repl-helper
     image: repl-helper
+    build:
+      context: ./
     networks:
       - backend
     volumes: 

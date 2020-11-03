@@ -1,3 +1,6 @@
+db = db.getSiblingDB("admin")
+db.auth("cladmin", "cladmin")
+
 cfg = {
   _id: "rs0",
   members: [
@@ -8,5 +11,11 @@ cfg = {
 };
 
 rs.initiate(cfg);
+rs.status();
 
-rs.conf();
+// keyfile auth needs
+/* eplSetInitiate quorum check failed because 
+not all proposed set members responded affirmatively: 
+mongodb2:27017 failed with command replSetHeartbeat requires authentication, 
+mongodb3:27017 failed with command replSetHeartbeat requires authentication */
+
