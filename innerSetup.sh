@@ -2,4 +2,4 @@
 
 sleep 10 | echo Sleeping
 
-mongo mongodb://mongodb1:27017 replicaInit.js
+mongo mongodb://mongodb1:27017 --keyFile /keys/mongodb.key replicaInit.js

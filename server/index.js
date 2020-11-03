@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const dotenv = require('dotenv')
+dotenv.config()
 const mongoose = require('mongoose'); 
-mongoose.connect('mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019,mongodb4:27020,mongodb5:27021/lunarcat?replicaSet=rs0', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
+mongoose.connect('mongodb://admin:lunarcat1234!@mongodb1:27017,mongodb2:27018,mongodb3:27019/lunarcat?replicaSet=rs0', { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log('connect db!')
 });
 let db = mongoose.connection;
