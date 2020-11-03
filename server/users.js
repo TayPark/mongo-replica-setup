@@ -1,3 +1,3 @@
 let mongoose = require('mongoose');
-let mycollectionSchema = new mongoose.Schema({name : String, fav: String});
+let mycollectionSchema = new mongoose.Schema({msg:String});
 module.exports = mongoose.model('User',mycollectionSchema);
