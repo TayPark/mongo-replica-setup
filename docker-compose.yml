@@ -12,9 +12,15 @@ services:
       - backend
     volumes:
       - ./data/db-01:/data/db
+      - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
+      - ./mongodb.key:/keys/mongodb.key:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27017:27017
-    command: mongod --bind_ip_all --replSet rs0
+    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
     restart: unless-stopped
 
   mongodb2:
@@ -24,9 +30,15 @@ services:
       - backend
     volumes:
       - ./data/db-02:/data/db
+      - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
+      - ./mongodb.key:/keys/mongodb.key:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27018:27017
-    command: mongod --bind_ip_all --replSet rs0
+    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
     restart: unless-stopped
 
   mongodb3:
@@ -36,33 +48,15 @@ services:
       - backend
     volumes:
       - ./data/db-03:/data/db
+      - ./dbinit.sh:/docker-entrypoint-initdb.d/dbinit.sh:ro
+      - ./mongodb.key:/keys/mongodb.key:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27019:27017
-    command: mongod --bind_ip_all --replSet rs0
-    restart: unless-stopped
-
-  mongodb4:
-    container_name: mongodb4
-    image: mongo
-    networks:
-      - backend
-    volumes:
-      - ./data/db-04:/data/db
-    ports:
-      - 27020:27017
-    command: mongod --bind_ip_all --replSet rs0
-    restart: unless-stopped
-
-  mongodb5:
-    container_name: mongodb5
-    image: mongo
-    networks:
-      - backend
-    volumes:
-      - ./data/db-05:/data/db
-    ports:
-      - 27021:27017
-    command: mongod --bind_ip_all --replSet rs0
+    command: ["--bind_ip_all", "--replSet", "rs0", "--keyFile", "/keys/mongodb.key"]
     restart: unless-stopped
 
   repl-helper:
@@ -70,12 +64,12 @@ services:
     image: repl-helper
     networks:
       - backend
+    volumes: 
+      - ./mongodb.key/:/keys/mongodb.key:ro
     depends_on:
       - mongodb1
       - mongodb2
       - mongodb3
-      - mongodb4
-      - mongodb5
   server:
     container_name: server
     build:
