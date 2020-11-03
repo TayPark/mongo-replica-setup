@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-sleep 10 | echo Sleeping
+sleep 15 | echo Sleeping
 
 mongo mongodb://mongodb1:27017 <<EOF
 use $MONGO_INITDB_DATABASE
