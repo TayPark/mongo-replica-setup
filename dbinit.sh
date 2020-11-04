@@ -1,18 +1,22 @@
 #!/bin/bash
 set -e
 
-mongo <<EOF
+mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD <<EOF
 use $MONGO_INITDB_DATABASE
 db.createUser({
   user:  '$MONGO_INITDB_ROOT_USERNAME',
   pwd: '$MONGO_INITDB_ROOT_PASSWORD',
   roles: [{
-    role: ['readWrite', 'dbAdmin', 'userAdmin'],
+    role: 'readWrite',
     db: '$MONGO_INITDB_DATABASE'
+  },
+  {
+    role: 'userAdminAnyDatabase',
+    db: 'admin'
+  },
+  {
+    role: 'clusterAdmin',
+    db: 'admin'
   }]
 })
-db.grantRolesToUser(
-   "admin",
-   [ {role: "clusterManager", db: "lunarcat"} ]
-)
 EOF
